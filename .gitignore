@@ -1,0 +1,43 @@
+# Build
+target/
+out/
+build/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# NetBeans
+nbproject/private/
+nbactions.xml
+
+# Eclipse
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+jacoco.exec
+target/site/jacoco/
