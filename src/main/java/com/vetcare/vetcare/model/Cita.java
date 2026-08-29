@@ -3,8 +3,8 @@ package com.vetcare.vetcare.model;
 import com.vetcare.vetcare.model.enums.EstadoCitaEnum;
 import java.time.LocalDateTime;
 
-
 public class Cita {
+
     private int id;
     private Mascota mascota;
     private Veterinario veterinario;
@@ -82,5 +82,5 @@ public class Cita {
     @Override
     public String toString() {
         return "Cita{" + "id=" + id + ", mascota=" + mascota + ", veterinario=" + veterinario + ", fechaHora=" + fechaHora + ", motivo=" + motivo + ", estado=" + estado + ", fechaDeCreacion=" + fechaDeCreacion + '}';
-    }  
+    }
 }
