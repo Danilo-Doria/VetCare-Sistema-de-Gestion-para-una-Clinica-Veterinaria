@@ -20,7 +20,7 @@ public class VeterinarioRepositoryImpl implements VeterinarioRepository {
     public Veterinario guardar(Veterinario entidad) throws PersistenciaException {
         String sql = "INSERT INTO veterinarios (tipo_identificacion, numero_identificacion, "
                 + "nombre_completo, estado, tarjeta_profesional, especialidad, telefono, correo_electronico) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?::estado_enum, ?, ?::especialidad_enum, ?, ?)";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -88,7 +88,7 @@ public class VeterinarioRepositoryImpl implements VeterinarioRepository {
     @Override
     public void actualizar(Veterinario entidad) throws PersistenciaException {
         String sql = "UPDATE veterinarios SET tipo_identificacion = ?, numero_identificacion = ?, "
-                + "nombre_completo = ?, estado = ?, tarjeta_profesional = ?, especialidad = ?, "
+                + "nombre_completo = ?, estado = ?::estado_enum, tarjeta_profesional = ?, especialidad = ?::especialidad_enum, "
                 + "telefono = ?, correo_electronico = ? WHERE id = ?";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -144,7 +144,7 @@ public class VeterinarioRepositoryImpl implements VeterinarioRepository {
 
     @Override
     public List<Veterinario> buscarPorEspecialidad(EspecialidadEnum especialidad) throws PersistenciaException {
-        String sql = "SELECT * FROM veterinarios WHERE especialidad = ?";
+        String sql = "SELECT * FROM veterinarios WHERE especialidad = ?::especialidad_enum";
         List<Veterinario> veterinarios = new ArrayList<>();
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {

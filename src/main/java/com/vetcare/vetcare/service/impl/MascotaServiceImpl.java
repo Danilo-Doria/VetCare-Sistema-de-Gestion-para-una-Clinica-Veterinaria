@@ -25,7 +25,7 @@ public class MascotaServiceImpl implements MascotaService {
                         "No se puede realizar la operación porque el propietario está inactivo."
                 );
             }
-            
+
             if (mascota.getFechaDeNacimiento().isAfter(LocalDate.now())) {
                 throw new BusinessException("La fecha de nacimiento no puede ser posterior a hoy.");
             }

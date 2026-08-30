@@ -22,10 +22,9 @@ public class CitaRepositoryImpl implements CitaRepository {
     @Override
     public Cita guardar(Cita entidad) throws PersistenciaException {
         String sql = "INSERT INTO citas (mascota_id, veterinario_id, fecha_hora, motivo, estado_cita, fecha_creacion) "
-                   + "VALUES (?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?::estado_cita_enum, ?)";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, entidad.getMascota().getId());
             ps.setInt(2, entidad.getVeterinario().getId());
@@ -52,8 +51,7 @@ public class CitaRepositoryImpl implements CitaRepository {
     public Optional<Cita> buscarPorId(Integer id) throws PersistenciaException {
         String sql = "SELECT * FROM citas WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
@@ -75,9 +73,7 @@ public class CitaRepositoryImpl implements CitaRepository {
         String sql = "SELECT * FROM citas";
         List<Cita> citas = new ArrayList<>();
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 citas.add(mapearCita(rs));
@@ -92,10 +88,9 @@ public class CitaRepositoryImpl implements CitaRepository {
     @Override
     public void actualizar(Cita entidad) throws PersistenciaException {
         String sql = "UPDATE citas SET mascota_id = ?, veterinario_id = ?, fecha_hora = ?, "
-                   + "motivo = ?, estado_cita = ? WHERE id = ?";
+                + "motivo = ?, estado_cita = ?::estado_cita_enum WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, entidad.getMascota().getId());
             ps.setInt(2, entidad.getVeterinario().getId());
@@ -117,8 +112,7 @@ public class CitaRepositoryImpl implements CitaRepository {
         // Aquí lo interpretamos como cancelarla. Revisa la nota más abajo.
         String sql = "UPDATE citas SET estado_cita = 'CANCELADA' WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -145,8 +139,7 @@ public class CitaRepositoryImpl implements CitaRepository {
         String sql = "SELECT * FROM citas WHERE fecha_hora = ?";
         List<Cita> citas = new ArrayList<>();
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setTimestamp(1, Timestamp.valueOf(fecha));
 
@@ -166,8 +159,7 @@ public class CitaRepositoryImpl implements CitaRepository {
     public boolean existePorVeterinarioFecha(Integer veterinarioId, LocalDateTime fecha) throws PersistenciaException {
         String sql = "SELECT 1 FROM citas WHERE veterinario_id = ? AND fecha_hora = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, veterinarioId);
             ps.setTimestamp(2, Timestamp.valueOf(fecha));
@@ -185,8 +177,7 @@ public class CitaRepositoryImpl implements CitaRepository {
     public boolean existePorMascotaFecha(Integer mascotaId, LocalDateTime fecha) throws PersistenciaException {
         String sql = "SELECT 1 FROM citas WHERE mascota_id = ? AND fecha_hora = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, mascotaId);
             ps.setTimestamp(2, Timestamp.valueOf(fecha));
@@ -201,12 +192,10 @@ public class CitaRepositoryImpl implements CitaRepository {
     }
 
     // --- Métodos privados de apoyo ---
-
     private List<Cita> buscarLista(String sql, Integer parametro) throws PersistenciaException {
         List<Cita> citas = new ArrayList<>();
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, parametro);
 
@@ -233,13 +222,13 @@ public class CitaRepositoryImpl implements CitaRepository {
                 .orElseThrow(() -> new PersistenciaException("Veterinario no encontrado para la cita con id " + id));
 
         return new Cita(
-            id,
-            mascota,
-            veterinario,
-            rs.getTimestamp("fecha_hora").toLocalDateTime(),
-            rs.getString("motivo"),
-            EstadoCitaEnum.valueOf(rs.getString("estado_cita")),
-            rs.getTimestamp("fecha_creacion").toLocalDateTime()
+                id,
+                mascota,
+                veterinario,
+                rs.getTimestamp("fecha_hora").toLocalDateTime(),
+                rs.getString("motivo"),
+                EstadoCitaEnum.valueOf(rs.getString("estado_cita")),
+                rs.getTimestamp("fecha_creacion").toLocalDateTime()
         );
     }
 }

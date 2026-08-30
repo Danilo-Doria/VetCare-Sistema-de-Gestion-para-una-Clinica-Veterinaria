@@ -142,3 +142,25 @@ CREATE TABLE detalles_medicamento_atencion (
         ON DELETE RESTRICT
         ON UPDATE CASCADE
 );
+
+-- 1. Un veterinario base
+INSERT INTO veterinarios (tipo_identificacion, numero_identificacion, nombre_completo, estado,
+                           tarjeta_profesional, especialidad, telefono, correo_electronico)
+VALUES ('CC', '1000000001', 'Dr. Carlos Ramírez', 'ACTIVO',
+        'TP-12345', 'MEDICINA_GENERAL', '3001112233', 'carlos.ramirez@vetcare.com');
+
+-- 2. Usuario ADMIN (sin veterinario asociado)
+INSERT INTO usuarios (tipo_identificacion, numero_identificacion, nombre_completo, estado,
+                       nombre_usuario, contrasena, rol, veterinario_id)
+VALUES ('CC', '2000000001', 'Admin Sistema', 'ACTIVO', 'admin', 'admin123', 'ADMIN', NULL);
+
+-- 3. Usuario RECEPCIONISTA (sin veterinario asociado)
+INSERT INTO usuarios (tipo_identificacion, numero_identificacion, nombre_completo, estado,
+                       nombre_usuario, contrasena, rol, veterinario_id)
+VALUES ('CC', '2000000002', 'Recepción Uno', 'ACTIVO', 'recepcion', 'recepcion123', 'RECEPCIONISTA', NULL);
+
+-- 4. Usuario VETERINARIO (SÍ asociado al veterinario del paso 1)
+INSERT INTO usuarios (tipo_identificacion, numero_identificacion, nombre_completo, estado,
+                       nombre_usuario, contrasena, rol, veterinario_id)
+VALUES ('CC', '1000000001', 'Dr. Carlos Ramírez', 'ACTIVO', 'cramirez', 'vet123',
+        'VETERINARIO', (SELECT id FROM veterinarios WHERE tarjeta_profesional = 'TP-12345'));

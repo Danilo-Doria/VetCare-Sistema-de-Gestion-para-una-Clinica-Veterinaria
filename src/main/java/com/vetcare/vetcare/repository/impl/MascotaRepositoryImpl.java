@@ -20,7 +20,7 @@ public class MascotaRepositoryImpl implements MascotaRepository {
     @Override
     public Mascota guardar(Mascota entidad) throws PersistenciaException {
         String sql = "INSERT INTO mascotas (nombre, especie, raza, sexo, fecha_nacimiento, peso, "
-                + "propietario_id, estado, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "propietario_id, estado, fecha_registro) VALUES (?, ?, ?, ?::sexo_enum, ?, ?, ?, ?::estado_enum, ?)";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -88,8 +88,8 @@ public class MascotaRepositoryImpl implements MascotaRepository {
 
     @Override
     public void actualizar(Mascota entidad) throws PersistenciaException {
-        String sql = "UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, sexo = ?, "
-                + "fecha_nacimiento = ?, peso = ?, propietario_id = ?, estado = ? WHERE id = ?";
+        String sql = "UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, sexo = ?::sexo_enum, "
+                + "fecha_nacimiento = ?, peso = ?, propietario_id = ?, estado = ?::estado_enum WHERE id = ?";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 

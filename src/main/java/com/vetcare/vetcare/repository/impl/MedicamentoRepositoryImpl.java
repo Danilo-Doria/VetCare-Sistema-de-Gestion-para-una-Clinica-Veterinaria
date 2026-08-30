@@ -17,11 +17,10 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
     @Override
     public Medicamento guardar(Medicamento entidad) throws PersistenciaException {
         String sql = "INSERT INTO medicamentos (codigo, nombre, presentacion, laboratorio, "
-                   + "cantidad_disponible, cantidad_minima, precio_unitario, estado, fecha_registro) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "cantidad_disponible, cantidad_minima, precio_unitario, estado, fecha_registro) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?::estado_enum, ?)";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, entidad.getCodigo());
             ps.setString(2, entidad.getNombre());
@@ -51,8 +50,7 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
     public Optional<Medicamento> buscarPorId(Integer id) throws PersistenciaException {
         String sql = "SELECT * FROM medicamentos WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
@@ -74,9 +72,7 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
         String sql = "SELECT * FROM medicamentos";
         List<Medicamento> medicamentos = new ArrayList<>();
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 medicamentos.add(mapearMedicamento(rs));
@@ -91,11 +87,10 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
     @Override
     public void actualizar(Medicamento entidad) throws PersistenciaException {
         String sql = "UPDATE medicamentos SET codigo = ?, nombre = ?, presentacion = ?, "
-                   + "laboratorio = ?, cantidad_disponible = ?, cantidad_minima = ?, "
-                   + "precio_unitario = ?, estado = ? WHERE id = ?";
+                + "laboratorio = ?, cantidad_disponible = ?, cantidad_minima = ?, "
+                + "precio_unitario = ?, estado = ?::estado_enum WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, entidad.getCodigo());
             ps.setString(2, entidad.getNombre());
@@ -118,8 +113,7 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
     public void desactivar(Integer id) throws PersistenciaException {
         String sql = "UPDATE medicamentos SET estado = 'INACTIVO' WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -133,8 +127,7 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
     public Optional<Medicamento> buscarPorCodigo(String codigo) throws PersistenciaException {
         String sql = "SELECT * FROM medicamentos WHERE codigo = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, codigo);
 
@@ -156,9 +149,7 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
         String sql = "SELECT * FROM medicamentos WHERE cantidad_disponible <= cantidad_minima";
         List<Medicamento> medicamentos = new ArrayList<>();
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 medicamentos.add(mapearMedicamento(rs));
@@ -171,19 +162,18 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
     }
 
     // --- Método privado de apoyo ---
-
     private Medicamento mapearMedicamento(ResultSet rs) throws SQLException {
         return new Medicamento(
-            rs.getInt("id"),
-            rs.getString("codigo"),
-            rs.getString("nombre"),
-            rs.getString("presentacion"),
-            rs.getString("laboratorio"),
-            rs.getInt("cantidad_disponible"),
-            rs.getInt("cantidad_minima"),
-            rs.getBigDecimal("precio_unitario"),
-            EstadoEnum.valueOf(rs.getString("estado")),
-            rs.getDate("fecha_registro").toLocalDate()
+                rs.getInt("id"),
+                rs.getString("codigo"),
+                rs.getString("nombre"),
+                rs.getString("presentacion"),
+                rs.getString("laboratorio"),
+                rs.getInt("cantidad_disponible"),
+                rs.getInt("cantidad_minima"),
+                rs.getBigDecimal("precio_unitario"),
+                EstadoEnum.valueOf(rs.getString("estado")),
+                rs.getDate("fecha_registro").toLocalDate()
         );
     }
 }

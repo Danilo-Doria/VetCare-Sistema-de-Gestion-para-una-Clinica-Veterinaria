@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Medicamento {
+
     private int id;
     private String codigo;
     private String nombre;
@@ -113,6 +114,5 @@ public class Medicamento {
     public String toString() {
         return "Medicamento{" + "id=" + id + ", codigo=" + codigo + ", nombre=" + nombre + ", presentacion=" + presentacion + ", laboratorio=" + laboratorio + ", cantidadDisponible=" + cantidadDisponible + ", cantidadMinima=" + cantidadMinima + ", precioUnitario=" + precioUnitario + ", estado=" + estado + ", fechaDeRegistro=" + fechaDeRegistro + '}';
     }
-    
-    
+
 }

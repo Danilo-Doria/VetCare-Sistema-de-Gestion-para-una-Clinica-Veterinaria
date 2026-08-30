@@ -20,10 +20,9 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     @Override
     public Usuario guardar(Usuario entidad) throws PersistenciaException {
         String sql = "INSERT INTO usuarios (tipo_identificacion, numero_identificacion, nombre_completo, "
-                   + "estado, nombre_usuario, contrasena, rol, veterinario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                + "estado, nombre_usuario, contrasena, rol, veterinario_id) VALUES (?, ?, ?, ?::estado_enum, ?, ?, ?::rol_enum, ?)";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, entidad.getTipoIdentificacion());
             ps.setString(2, entidad.getNumeroIdentificacion());
@@ -49,6 +48,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
             return entidad;
 
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new PersistenciaException("No se pudo guardar el usuario", e);
         }
     }
@@ -57,8 +57,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     public Optional<Usuario> buscarPorId(Integer id) throws PersistenciaException {
         String sql = "SELECT * FROM usuarios WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
@@ -80,9 +79,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         String sql = "SELECT * FROM usuarios";
         List<Usuario> usuarios = new ArrayList<>();
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 usuarios.add(mapearUsuario(rs));
@@ -97,11 +94,10 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     @Override
     public void actualizar(Usuario entidad) throws PersistenciaException {
         String sql = "UPDATE usuarios SET tipo_identificacion = ?, numero_identificacion = ?, "
-                   + "nombre_completo = ?, estado = ?, nombre_usuario = ?, contrasena = ?, "
-                   + "rol = ?, veterinario_id = ? WHERE id = ?";
+                + "nombre_completo = ?, estado = ?::estado_enum, nombre_usuario = ?, contrasena = ?, "
+                + "rol = ?::rol_enum, veterinario_id = ? WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, entidad.getTipoIdentificacion());
             ps.setString(2, entidad.getNumeroIdentificacion());
@@ -130,8 +126,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     public void desactivar(Integer id) throws PersistenciaException {
         String sql = "UPDATE usuarios SET estado = 'INACTIVO' WHERE id = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -145,8 +140,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     public Optional<Usuario> buscarPorNombreDeUsuario(String nombreUsuario) throws PersistenciaException {
         String sql = "SELECT * FROM usuarios WHERE nombre_usuario = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, nombreUsuario);
 
@@ -164,7 +158,6 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     // --- Método privado de apoyo ---
-
     private Usuario mapearUsuario(ResultSet rs) throws SQLException, PersistenciaException {
         int veterinarioId = rs.getInt("veterinario_id");
         Veterinario veterinario = null;
@@ -174,15 +167,15 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         }
 
         return new Usuario(
-            rs.getString("nombre_usuario"),
-            rs.getString("contrasena"),
-            RolEnum.valueOf(rs.getString("rol")),
-            veterinario,
-            rs.getInt("id"),
-            rs.getString("tipo_identificacion"),
-            rs.getString("numero_identificacion"),
-            rs.getString("nombre_completo"),
-            EstadoEnum.valueOf(rs.getString("estado"))
+                rs.getString("nombre_usuario"),
+                rs.getString("contrasena"),
+                RolEnum.valueOf(rs.getString("rol")),
+                veterinario,
+                rs.getInt("id"),
+                rs.getString("tipo_identificacion"),
+                rs.getString("numero_identificacion"),
+                rs.getString("nombre_completo"),
+                EstadoEnum.valueOf(rs.getString("estado"))
         );
     }
 }

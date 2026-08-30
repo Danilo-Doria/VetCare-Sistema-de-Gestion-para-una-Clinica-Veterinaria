@@ -16,7 +16,7 @@ public class PropietarioRepositoryImpl implements PropietarioRepository {
     public Propietario guardar(Propietario entidad) throws PersistenciaException {
         String sql = "INSERT INTO propietarios (tipo_identificacion, numero_identificacion, "
                 + "nombre_completo, estado, telefono, correo_electronico, direccion, fecha_registro) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?::estado_enum, ?, ?, ?, ?)";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -101,7 +101,7 @@ public class PropietarioRepositoryImpl implements PropietarioRepository {
     @Override
     public void actualizar(Propietario entidad) throws PersistenciaException {
         String sql = "UPDATE propietarios SET tipo_identificacion = ?, numero_identificacion = ?, "
-                + "nombre_completo = ?, estado = ?, telefono = ?, correo_electronico = ?, "
+                + "nombre_completo = ?, estado = ?::estado_enum, telefono = ?, correo_electronico = ?, "
                 + "direccion = ? WHERE id = ?";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {

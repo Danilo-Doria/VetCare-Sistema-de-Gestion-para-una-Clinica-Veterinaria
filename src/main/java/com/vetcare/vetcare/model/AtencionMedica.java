@@ -4,6 +4,7 @@ import com.vetcare.vetcare.model.enums.EstadoAtencionEnum;
 import java.time.LocalDate;
 
 public class AtencionMedica {
+
     private int id;
     private Cita cita;
     private Mascota mascota;
@@ -112,6 +113,5 @@ public class AtencionMedica {
     public String toString() {
         return "AtencionMedica{" + "id=" + id + ", cita=" + cita + ", mascota=" + mascota + ", veterinario=" + veterinario + ", sintomas=" + sintomas + ", diagnostico=" + diagnostico + ", tratamiento=" + tratamiento + ", observaciones=" + observaciones + ", fechaAtencion=" + fechaAtencion + ", estado=" + estado + '}';
     }
-    
-    
+
 }

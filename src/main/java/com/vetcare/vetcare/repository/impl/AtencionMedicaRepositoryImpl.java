@@ -24,7 +24,7 @@ public class AtencionMedicaRepositoryImpl implements AtencionMedicaRepository {
     public AtencionMedica guardar(AtencionMedica entidad) throws PersistenciaException {
         String sql = "INSERT INTO atenciones_medicas (cita_id, mascota_id, veterinario_id, sintomas, "
                 + "diagnostico, tratamiento, observaciones, fecha_atencion, estado_atencion) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::estado_atencion_enum)";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -93,7 +93,7 @@ public class AtencionMedicaRepositoryImpl implements AtencionMedicaRepository {
     @Override
     public void actualizar(AtencionMedica entidad) throws PersistenciaException {
         String sql = "UPDATE atenciones_medicas SET sintomas = ?, diagnostico = ?, tratamiento = ?, "
-                + "observaciones = ?, estado_atencion = ? WHERE id = ?";
+                + "observaciones = ?, estado_atencion = ?::estado_atencion_enum WHERE id = ?";
 
         try (Connection conn = ConexionBD.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -113,9 +113,6 @@ public class AtencionMedicaRepositoryImpl implements AtencionMedicaRepository {
 
     @Override
     public void desactivar(Integer id) throws PersistenciaException {
-        // Nota: igual que con Cita, "desactivar" no tiene un equivalente natural aquí.
-        // El documento no pide desactivar atenciones médicas explícitamente.
-        // Dejamos el método porque lo exige la interfaz, pero podría no usarse nunca en la práctica.
         throw new UnsupportedOperationException("Las atenciones médicas no se desactivan, se finalizan.");
     }
 

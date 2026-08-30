@@ -1,10 +1,11 @@
 package com.vetcare.vetcare.model;
 
 public class DetalleMedicamentoAtencion {
-   private int id;
-   private AtencionMedica atencionMedica;
-   private Medicamento medicamento;
-   private int cantidadUtilizada;
+
+    private int id;
+    private AtencionMedica atencionMedica;
+    private Medicamento medicamento;
+    private int cantidadUtilizada;
 
     public DetalleMedicamentoAtencion(int id, AtencionMedica atencionMedica, Medicamento medicamento, int cantidadDisponible) {
         this.id = id;
