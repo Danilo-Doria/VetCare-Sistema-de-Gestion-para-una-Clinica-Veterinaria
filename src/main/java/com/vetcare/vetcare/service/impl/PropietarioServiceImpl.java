@@ -89,4 +89,15 @@ public class PropietarioServiceImpl implements PropietarioService {
             throw new ErrorSistemaException("No se pudo desactivar el propietario", e);
         }
     }
+
+    @Override
+    public Propietario buscarPorNumeroIdentificacion(String numeroIdentificacion) {
+        try {
+            return propietarioRepository.buscarPorNumeroIdentificacion(numeroIdentificacion)
+                    .orElseThrow(() -> new OwnerNotFoundException(
+                            "No existe un propietario con identificación: " + numeroIdentificacion));
+        } catch (PersistenciaException e) {
+            throw new ErrorSistemaException("No se pudo buscar el propietario", e);
+        }
+    }
 }

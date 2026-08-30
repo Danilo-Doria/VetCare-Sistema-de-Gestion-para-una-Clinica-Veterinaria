@@ -130,7 +130,7 @@ public class MedicamentoRepositoryImpl implements MedicamentoRepository {
     }
 
     @Override
-    public Optional<Medicamento> buscarMedicamentoPorCodigo(String codigo) throws PersistenciaException {
+    public Optional<Medicamento> buscarPorCodigo(String codigo) throws PersistenciaException {
         String sql = "SELECT * FROM medicamentos WHERE codigo = ?";
 
         try (Connection conn = ConexionBD.getConnection();

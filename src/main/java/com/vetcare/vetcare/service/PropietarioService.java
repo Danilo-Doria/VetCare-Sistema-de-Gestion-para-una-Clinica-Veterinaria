@@ -9,4 +9,5 @@ public interface PropietarioService {
     List<Propietario> listar();
     Propietario actualizar(Propietario propietario);
     void desactivar(Integer id);
+    Propietario buscarPorNumeroIdentificacion(String numeroIdentificacion);
 }

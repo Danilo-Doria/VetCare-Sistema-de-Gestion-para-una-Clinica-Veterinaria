@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface MedicamentoRepository extends CrudRepository<Medicamento, Integer> {
 
-    Optional<Medicamento> buscarMedicamentoPorCodigo(String codigo) throws PersistenciaException;
+    Optional<Medicamento> buscarPorCodigo(String codigo) throws PersistenciaException;
 
     List<Medicamento> consultarBajoInventario() throws PersistenciaException;
 }
